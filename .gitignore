@@ -673,4 +673,4 @@ $RECYCLE.BIN/
 
 # Custom
 .env
-/Movies.Api/appsettings.Development.json
+**/appsettings.Development.json
