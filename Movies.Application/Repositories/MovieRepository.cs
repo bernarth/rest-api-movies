@@ -48,7 +48,7 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
 
         var genres = await connection.QueryAsync<string>(
             new CommandDefinition("""
-                SELECT name FROM WHERE movieId = @id
+                SELECT name FROM genres WHERE movieid = @id
                 """, new { id }, cancellationToken: token));
 
         foreach (var genre in genres)
@@ -74,7 +74,7 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
 
         var genres = await connection.QueryAsync<string>(
             new CommandDefinition("""
-                SELECT name FROM WHERE movieId = @id
+                SELECT name FROM genres WHERE movieId = @id
                 """, new { id = movie.Id }, cancellationToken: token));
 
         foreach (var genre in genres)
@@ -92,13 +92,13 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
             SELECT m.*, string_agg(g.name, ',') as genres
             FROM movies m LEFT JOIN genres g ON m.id = g.movieid
             GROUP BY id
-            """));
+            """, cancellationToken: token));
 
         return result.Select(x => new Movie
         {
             Id = x.id,
             Title = x.title,
-            YearOfRelease = x.yearOfRelease,
+            YearOfRelease = x.yearofrelease,
             Genres = Enumerable.ToList(x.genres.Split(',')),
         });
     }
@@ -150,7 +150,7 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
 
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
-            SELECT COUNT(1) FROM movies id = @id
+            SELECT COUNT(1) FROM movies WHERE id = @id
             """, new { id }, cancellationToken: token));
     }
 }
