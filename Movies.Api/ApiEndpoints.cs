@@ -14,7 +14,7 @@ public static class ApiEndpoints
         public const string Update = $"{Base}/{{id:guid}}";
         public const string Delete = $"{Base}/{{id:guid}}";
 
-        public const string Rage = $"{Base}/{{id:guid}}/ratings";
+        public const string Rate = $"{Base}/{{id:guid}}/ratings";
         public const string DeleteRatings = $"{Base}/{{id:guid}}/ratings";
     }
 

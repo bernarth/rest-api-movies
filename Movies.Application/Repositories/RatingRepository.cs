@@ -8,6 +8,19 @@ public class RatingRepository(IDbConnectionFactory dbConnectionFactory) : IRatin
 {
     private readonly IDbConnectionFactory _dbConnectionFactory = dbConnectionFactory;
 
+    public async Task<bool> RateMovieAsync(Guid movieId, int rating, Guid userId, CancellationToken token = default)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+        var result = await connection.ExecuteAsync(new CommandDefinition("""
+            INSERT INTO ratings(userid, movieid, rating)
+            VALUES (@userId, @movieId, @rating)
+            ON CONFLICT (userid, movieid) DO UPDATE
+                SET rating = @rating
+            """, new { userId, movieId, rating }, cancellationToken: token));
+
+        return result > 0;
+    }
+
     public async Task<float?> GetRatingAsync(Guid movieId, CancellationToken token = default)
     {
         using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
