@@ -10,7 +10,9 @@ public static class ApplicationServiceCollectionExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
+        services.AddScoped<IRatingRepository, IRatingRepository>();
         services.AddScoped<IMovieRepository, MovieRepository>();
+        services.AddScoped<IRatingService, RatingService>();
         services.AddScoped<IMovieService, MovieService>();
         services.AddValidatorsFromAssemblyContaining<IApplicationMarker>();
 
