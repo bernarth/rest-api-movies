@@ -103,14 +103,14 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
         var result = await connection.QueryAsync(new CommandDefinition("""
             SELECT m.*, 
                 string_agg(g.name, ',') AS genres,
-                ROUND(AVG(r.ratings), 1) AS rating,
-                myr.rating AS userrating,
+                ROUND(AVG(r.rating), 1) AS rating,
+                myr.rating AS userrating
             FROM movies m 
             LEFT JOIN genres g ON m.id = g.movieid
             LEFT JOIN ratings r ON m.id = r.movieid
             LEFT JOIN ratings myr ON m.id = myr.movieid
                 AND myr.userid = @userId
-            GROUP BY id
+            GROUP BY id, userrating
             """, new { userId }, cancellationToken: token));
 
         return result.Select(x => new Movie

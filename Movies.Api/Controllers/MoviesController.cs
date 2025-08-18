@@ -9,7 +9,6 @@ using Movies.Contracts.Responses;
 
 namespace Movies.Api.Controllers;
 
-[Authorize]
 [ApiController]
 public class MoviesController(IMovieService movieService) : ControllerBase
 {
