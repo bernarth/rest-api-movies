@@ -123,11 +123,15 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
             WHERE (@title IS NULL OR m.title like(% || @title || %))
             AND (@yearofrelease IS NULL OR m.yearofrelease = @yearofrelease)
             GROUP BY id, userrating {orderClause}
+            LIMIT @pagesize
+            OFFSET @pageoffset
             """, new
         { 
             userId = options.UserId,
             title = options.Title,
-            yearofrelease = options.YearOfRelease
+            yearofrelease = options.YearOfRelease,
+            pagesize = options.PageSize,
+            pageoffset = (options.Page - 1) * options.PageSize,
         }, cancellationToken: token));
 
         return result.Select(x => new Movie
@@ -190,5 +194,20 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
         return await connection.ExecuteScalarAsync<bool>(new CommandDefinition("""
             SELECT COUNT(1) FROM movies WHERE id = @id
             """, new { id }, cancellationToken: token));
+    }
+
+    public async Task<int> GetCountAsync(string? title, int? yearOfRelease, CancellationToken token = default)
+    {
+        using var connection = await _dbConnectionFactory.CreateConnectionAsync(token);
+
+        return await connection.QuerySingleAsync<int>(new CommandDefinition("""
+            SELECT COUNT(id) FROM movies
+            WHERE (@title IS NULL OR title LIKE (% || @title || %))
+            AND (@yearofrelease IS NULL OR yearofrelease = @yearofrelease)
+            """, new
+        {
+            title,
+            yearofrelease = yearOfRelease
+        }, cancellationToken: token));
     }
 }
