@@ -120,7 +120,7 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
             LEFT JOIN ratings r ON m.id = r.movieid
             LEFT JOIN ratings myr ON m.id = myr.movieid
                 AND myr.userid = @userId
-            WHERE (@title IS NULL OR m.title like(% || @title || %))
+            WHERE (@title IS NULL OR m.title LIKE ('%' || @title || '%'))
             AND (@yearofrelease IS NULL OR m.yearofrelease = @yearofrelease)
             GROUP BY id, userrating {orderClause}
             LIMIT @pagesize
@@ -202,7 +202,7 @@ public class MovieRepository(IDbConnectionFactory dbConnectionFactory) : IMovieR
 
         return await connection.QuerySingleAsync<int>(new CommandDefinition("""
             SELECT COUNT(id) FROM movies
-            WHERE (@title IS NULL OR title LIKE (% || @title || %))
+            WHERE (@title IS NULL OR title LIKE ('%' || @title || '%'))
             AND (@yearofrelease IS NULL OR yearofrelease = @yearofrelease)
             """, new
         {
