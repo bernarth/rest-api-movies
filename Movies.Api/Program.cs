@@ -43,10 +43,15 @@ builder.Services.AddApiVersioning(x =>
     x.AssumeDefaultVersionWhenUnspecified = true;
     x.ReportApiVersions = true;
     x.ApiVersionReader = new MediaTypeApiVersionReader("api-version");
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.AssumeDefaultVersionWhenUnspecified = true;
 }).AddMvc();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi(options =>
+
+builder.Services.AddOpenApi("v1", options =>
 {
     options.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
 });
@@ -70,6 +75,7 @@ if (app.Environment.IsDevelopment())
         {
             PreferredSecuritySchemes = ["Bearer"]
         };
+        options.AddDocuments(["v1"]);
     });
 }
 
