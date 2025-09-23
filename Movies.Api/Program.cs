@@ -1,7 +1,9 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
+using Movies.Api.Health;
 using Movies.Api.Mapping;
 using Movies.Api.Scalar.Transformers;
 using Movies.Application;
@@ -51,6 +53,9 @@ builder.Services.AddApiVersioning(x =>
 
 builder.Services.AddControllers();
 
+builder.Services.AddHealthChecks()
+    .AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
+
 builder.Services.AddOpenApi("v1", options =>
 {
     options.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
@@ -78,6 +83,8 @@ if (app.Environment.IsDevelopment())
         options.AddDocuments(["v1"]);
     });
 }
+
+app.MapHealthChecks("_health");
 
 app.UseHttpsRedirection();
 
