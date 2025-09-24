@@ -4,11 +4,16 @@ using Movies.Application.Repositories;
 
 namespace Movies.Application.Services;
 
-public class MovieService(IMovieRepository movieRepository, IRatingRepository ratingRespository, IValidator<Movie> movieValidator) : IMovieService
+public class MovieService(
+    IMovieRepository movieRepository,
+    IRatingRepository ratingRespository,
+    IValidator<Movie> movieValidator,
+    IValidator<GetAllMoviesOptions> optionsValidator) : IMovieService
 {
     private readonly IMovieRepository _movieRepository = movieRepository;
     private readonly IRatingRepository _ratingRepository = ratingRespository;
     private readonly IValidator<Movie> _movieValidator = movieValidator;
+    private readonly IValidator<GetAllMoviesOptions> _optionsValidator = optionsValidator;
 
     public async Task<bool> CreateAsync(Movie movie, CancellationToken token = default)
     {
@@ -27,9 +32,11 @@ public class MovieService(IMovieRepository movieRepository, IRatingRepository ra
         return _movieRepository.GetBySlugAsync(slug, userId, token);
     }
 
-    public Task<IEnumerable<Movie>> GetAllAsync(Guid? userId = default,CancellationToken token = default)
+    public async Task<IEnumerable<Movie>> GetAllAsync(GetAllMoviesOptions options, CancellationToken token = default)
     {
-        return _movieRepository.GetAllAsync(userId, token);
+        _optionsValidator.ValidateAndThrow(options);
+
+        return await _movieRepository.GetAllAsync(options, token);
     }
 
     public async Task<Movie?> UpdateAsync(Movie movie, Guid? userId = default, CancellationToken token = default)
@@ -62,5 +69,10 @@ public class MovieService(IMovieRepository movieRepository, IRatingRepository ra
     public Task<bool> DeleteByIdAsync(Guid id, CancellationToken token = default)
     {
         return _movieRepository.DeleteByIdAsync(id, token);
+    }
+
+    public Task<int> GetCountAsync(string? title, int? yearOfRelease, CancellationToken token = default)
+    {
+        return _movieRepository.GetCountAsync(title, yearOfRelease, token);
     }
 }
