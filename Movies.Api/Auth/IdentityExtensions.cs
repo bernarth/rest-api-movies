@@ -6,7 +6,7 @@ public static class IdentityExtensions
 {
     public static Guid? GetUserId(this HttpContext context)
     {
-        Claim? userId = context.User.Claims.SingleOrDefault(x => x.Type == "userid");
+        Claim? userId = context.User.Claims.SingleOrDefault(x => x.Type == AuthConstants.UserIdClaimName);
 
         if (Guid.TryParse(userId?.Value, out var parsedId))
         {

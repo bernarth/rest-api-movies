@@ -1,6 +1,5 @@
 using Asp.Versioning;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Movies.Api.Auth;
 using Movies.Api.Health;
@@ -21,6 +20,7 @@ builder.Services.AddAuthentication(x =>
     x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(x =>
 {
+    x.MapInboundClaims = false;
     x.TokenValidationParameters = new TokenValidationParameters
     {
         IssuerSigningKey = new SymmetricSecurityKey(
@@ -30,14 +30,13 @@ builder.Services.AddAuthentication(x =>
         ValidIssuer = config["Jwt:Issuer"],
         ValidAudience = config["Jwt:Audience"],
         ValidateIssuer = true,
-        ValidateAudience = true
+        ValidateAudience = true,
+        RoleClaimType = AuthConstants.UserRoleClaimName,
+        ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
     };
 });
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy(AuthConstants.AdminUserPolicyName, p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"))
-    .AddPolicy(AuthConstants.TrustedMemberPolicyName, p => p.RequireAssertion(c => 
-            c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
-            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
+    .AddPolicy(AuthConstants.AdminUserPolicyName, p => p.RequireRole(AuthConstants.AdminUserClaimValue));
 
 builder.Services.AddApiVersioning(x =>
 {

@@ -16,7 +16,7 @@ public class MoviesController(IMovieService movieService) : ControllerBase
 {
     private readonly IMovieService _movieService = movieService;
 
-    [Authorize(AuthConstants.TrustedMemberPolicyName)]
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [HttpPost(ApiEndpoints.Movies.Create)]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
@@ -64,7 +64,7 @@ public class MoviesController(IMovieService movieService) : ControllerBase
         return Ok(response);
     }
 
-    [Authorize(AuthConstants.TrustedMemberPolicyName)]
+    [Authorize(AuthConstants.AdminUserPolicyName)]
     [HttpPut(ApiEndpoints.Movies.Update)]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]

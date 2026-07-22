@@ -2,9 +2,9 @@
 
 public static class AuthConstants
 {
-    public const string AdminUserPolicyName = "Admin";
-    public const string AdminUserClaimName = "admin";
+    public const string UserRoleClaimName = "role";
+    public const string UserIdClaimName = "sub";
 
-    public const string TrustedMemberPolicyName = "Trusted";
-    public const string TrustedMemberClaimName = "trusted_member";
+    public const string AdminUserPolicyName = "AdminPolicy";
+    public const string AdminUserClaimValue = "Admin";
 }
