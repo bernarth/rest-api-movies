@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 
 namespace Movies.Application.Database;
 
@@ -8,7 +9,7 @@ public class DbInitializer(IDbConnectionFactory dbConnectionFactory)
 
     public async Task InitializeAsync()
     {
-        using var connection = await _dbConnectionFactory.CreateConnectionAsync();
+        using IDbConnection connection = await _dbConnectionFactory.CreateConnectionAsync();
 
         await connection.ExecuteAsync("""
             CREATE TABLE IF NOT EXISTS movies (

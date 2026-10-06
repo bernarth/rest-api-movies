@@ -14,7 +14,7 @@ public class Movie
 
     private string GenerateSlug()
     {
-        var sluggedTitle = Regexes.SlugRegex().Replace(Title, string.Empty)
+        string sluggedTitle = Regexes.SlugRegex().Replace(Title, string.Empty)
             .ToLower()
             .Replace(" ", "-");
 

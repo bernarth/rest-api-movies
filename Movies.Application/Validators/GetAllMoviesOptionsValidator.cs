@@ -5,7 +5,7 @@ namespace Movies.Application.Validators;
 
 public class GetAllMoviesOptionsValidator : AbstractValidator<GetAllMoviesOptions>
 {
-    private static readonly string[] AcceptableSortFields =
+    private static readonly string[] _acceptableSortFields =
     {
         "title", "yearofrelease"
     };
@@ -16,7 +16,7 @@ public class GetAllMoviesOptionsValidator : AbstractValidator<GetAllMoviesOption
             .LessThanOrEqualTo(DateTime.UtcNow.Year);
 
         RuleFor(x => x.SortField)
-            .Must(x => x is null || AcceptableSortFields.Contains(x, StringComparer.OrdinalIgnoreCase))
+            .Must(x => x is null || _acceptableSortFields.Contains(x, StringComparer.OrdinalIgnoreCase))
             .WithMessage("You can only sort by 'title' or 'yearofrelease'");
 
         RuleFor(x => x.Page)
