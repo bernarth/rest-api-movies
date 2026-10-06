@@ -9,13 +9,11 @@ ConfigurationManager config = builder.Configuration;
 builder.Services.AddMoviesAuthentication(config);
 builder.Services.AddMoviesAuthorization();
 
-builder.Services.AddMoviesVersioning();
+builder.Services.AddMoviesVersioning().AddMoviesDocumentation();
 
 builder.Services.AddControllers();
 
 builder.Services.AddMoviesHealthCheck();
-
-builder.Services.AddMoviesDocumentation();
 
 builder.Services.AddApplication();
 

@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using Movies.Api.Scalar.Transformers;
 using Scalar.AspNetCore;
 
@@ -5,20 +6,19 @@ namespace Movies.Api.Extensions;
 
 public static class DocumentationExtensions
 {
-    public static IServiceCollection AddMoviesDocumentation(this IServiceCollection services)
+    public static IApiVersioningBuilder AddMoviesDocumentation(this IApiVersioningBuilder builder)
     {
-        services.AddOpenApi("v1", options =>
+        return builder.AddOpenApi(options =>
         {
-            options.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
+            options.Document.AddDocumentTransformer<BearerSecurityDocumentTransformer>();
         });
-        return services;
     }
 
     public static WebApplication UseMoviesDocumentation(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            app.MapOpenApi().WithDocumentPerVersion();
             app.MapScalarApiReference(options =>
             {
                 options

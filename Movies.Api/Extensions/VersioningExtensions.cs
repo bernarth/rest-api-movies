@@ -4,9 +4,9 @@ namespace Movies.Api.Extensions;
 
 public static class VersioningExtensions
 {
-    public static IServiceCollection AddMoviesVersioning(this IServiceCollection services)
+    public static IApiVersioningBuilder AddMoviesVersioning(this IServiceCollection services)
     {
-        services.AddApiVersioning(x =>
+        return services.AddApiVersioning(x =>
         {
             x.DefaultApiVersion = new ApiVersion(1.0);
             x.AssumeDefaultVersionWhenUnspecified = true;
@@ -17,7 +17,5 @@ public static class VersioningExtensions
             options.GroupNameFormat = "'v'VVV";
             options.AssumeDefaultVersionWhenUnspecified = true;
         }).AddMvc();
-
-        return services;
     }
 }
